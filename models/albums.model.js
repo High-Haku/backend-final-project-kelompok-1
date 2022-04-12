@@ -5,20 +5,14 @@ const albumsSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  publiser: {
-    type: String,
-    required: true,
-  },
   artist: {
-    // type: mongoose.Types.ObjectId,
-    // ref: "artists",
-    type: String,
+    type: mongoose.Types.ObjectId,
+    ref: "artists",
     required: true,
   },
-  song: {
-    // type: mongoose.Types.ObjectId,
-    // ref: "songs",
-    type: String,
+  songs: {
+    type: [mongoose.Types.ObjectId],
+    ref: "songs",
     required: true,
   },
   image: {

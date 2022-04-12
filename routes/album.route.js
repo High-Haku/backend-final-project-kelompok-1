@@ -24,15 +24,11 @@ router.post(
   addAlbum
 );
 
-router.put(
-  "/:id",
-  multer({
-    storage: imageStorage,
-    limits: { fileSize: 1024 * 1024 * 2 },
-    fileFilter: imageFilter,
-  }).single("image"),
-  updateAlbumById
-);
+router.patch("/:id",multer({
+  storage: imageStorage,
+  limits: { fileSize: 1024 * 1024 * 2 },
+  fileFilter: imageFilter,
+}).single("image"), updateAlbumById);
 
 router.delete("/:id", deleteAlbumById);
 

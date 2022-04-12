@@ -5,17 +5,13 @@ const artistsSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    song: {
-        // type: mongoose.Types.ObjectId,
-        // ref: "songs",
-        type: String,
-        required: true
+    songs: {
+        type: [mongoose.Types.ObjectId],
+        ref: "songs",
     },
     albums: {
-        // type: mongoose.Types.ObjectId,
-        // ref: "albums",
-        type: String,
-        required: true
+        type: [mongoose.Types.ObjectId],
+        ref: "albums",
     }
 });
 

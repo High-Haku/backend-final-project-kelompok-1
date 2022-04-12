@@ -22,6 +22,7 @@ const getUserByID = async (req, res) => {
   try {
     const user = await Users.findById(req.params.id);
     if (!user) return res.status(404).json({ messege: "user already deleted" });
+
     res.json({
       message: "Get data user by id success",
       user,

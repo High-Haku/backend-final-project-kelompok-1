@@ -1,9 +1,16 @@
-const { Albums } = require("../models/index");
+const Albums = require("../models/albums.model");
+const { uploadFile, deleteFileStream } = require("../config/s3");
 
 module.exports = {
   getAll: async (req, res) => {
-    const data = await Albums.find({}, "-__v")
     try {
+      const data = await Albums.find({}, "-__v")
+        .populate("songs", "title -_id")
+        .populate("artist", "name -_id");
+
+      if (!data)
+        return res.status(404).json({ messege: "album already deleted" });
+
       res.json({
         message: "Succes get All Albums",
         data: data,
@@ -14,8 +21,13 @@ module.exports = {
     }
   },
   getById: async (req, res) => {
-    const data = await Albums.findById(req.params.id, "-__v")
     try {
+      const data = await Albums.findById(req.params.id, "-__v")
+        .populate("songs", "title -_id")
+        .populate("artist", "name -_id");
+
+      if (!data) return res.status(404).json({ messege: "album not found" });
+
       res.json({
         message: "Succes get All Albums By ID",
         data: data,
@@ -25,42 +37,53 @@ module.exports = {
       res.status(500).send(err);
     }
   },
-  addAlbum: async (req, res) => {
-    const data = req.body;
 
-      try {
-        await Albums.create(data);
-        res.json({
-          message: "Succes add Albums"
-        });
-      } catch (err) {
-        console.log(err);
-        res.status(500).send(err);
+  addAlbum: async (req, res) => {
+    try {
+      const data = req.body;
+
+      // upload file to aws s3
+      if (req.file) {
+        const result = await uploadFile(req.file);
+        console.log(result);
+        data.image = result.key;
       }
+
+      await Albums.create(data);
+      res.json({
+        message: "Succes add Albums",
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err);
+    }
   },
 
   updateAlbumById: async (req, res) => {
+    try {
       await Albums.updateOne({ _id: req.params.id }, { $set: req.body });
-      try {
-        res.json({
-          message: "Succes Update Albums"
-        });
-      } catch (err) {
-        console.log(err);
-        res.status(400).send(err);
-      }
+      res.json({
+        message: "Succes Update Albums",
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(400).send(err);
+    }
   },
 
   deleteAlbumById: async (req, res) => {
+    try {
+      const album = (await Albums.findById(req.params.id, "-__v")) || false;
+      if (!album) return res.status(404).json({ messege: "album not found" });
 
       await Albums.deleteOne({ _id: req.params.id });
-      try {
-        res.json({
-          message: "Succes delete Albums"
-        });
-      } catch (err) {
-        console.log(err);
-        res.status(500).send(err);
-      }
-  }
+      await deleteFileStream(album.image);
+      res.json({
+        message: "Success delete Albums",
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err);
+    }
+  },
 };
