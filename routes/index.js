@@ -10,12 +10,15 @@ const {
 // Router Import
 const usersRouter = require("./user.router");
 const playlistsRouter = require("./playlist.router");
+const songRouter = require("./song.route")
+const albumRouter = require("./album.route")
+const artistRoute = require("./artist.route")
 
 // route
 router.use("/users", usersRouter);
 router.use("/playlists", playlistsRouter);
-
 router.use('/song', songRouter)
+
 router.use('/album', albumRouter)
 router.use('/artist', artistRoute)
 
@@ -23,9 +26,6 @@ router.use('/artist', artistRoute)
 router.get("/chart", getTopChart);
 router.get("/search", searchOnDeezer);
 
-const songRouter = require("./song.route")
-const albumRouter = require("./album.route")
-const artistRoute = require("./artist.route")
 
 router.get("*", (req, res) => {
   res.sendStatus(404);

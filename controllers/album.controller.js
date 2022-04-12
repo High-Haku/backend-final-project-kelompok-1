@@ -2,8 +2,8 @@ const { Albums } = require("../models/index");
 
 module.exports = {
   getAll: async (req, res) => {
-    const data = await Albums.find({}, "-__v")
     try {
+      const data = await Albums.find({}, "-__v").populate("songs", "title -_id").populate("artists", "name -_id")
       res.json({
         message: "Succes get All Albums",
         data: data,
@@ -14,8 +14,8 @@ module.exports = {
     }
   },
   getById: async (req, res) => {
-    const data = await Albums.findById(req.params.id, "-__v")
     try {
+      const data = await Albums.findById(req.params.id, "-__v").populate("songs", "title -_id").populate("artists", "name -_id")
       res.json({
         message: "Succes get All Albums By ID",
         data: data,
@@ -26,9 +26,9 @@ module.exports = {
     }
   },
   addAlbum: async (req, res) => {
-    const data = req.body;
-
-      try {
+    
+    try {
+        const data = req.body;
         await Albums.create(data);
         res.json({
           message: "Succes add Albums"
@@ -40,8 +40,8 @@ module.exports = {
   },
 
   updateAlbumById: async (req, res) => {
-      await Albums.updateOne({ _id: req.params.id }, { $set: req.body });
-      try {
+    try {
+        await Albums.updateOne({ _id: req.params.id }, { $set: req.body });
         res.json({
           message: "Succes Update Albums"
         });
@@ -53,8 +53,8 @@ module.exports = {
 
   deleteAlbumById: async (req, res) => {
 
-      await Albums.deleteOne({ _id: req.params.id });
-      try {
+    try {
+        await Albums.deleteOne({ _id: req.params.id });
         res.json({
           message: "Succes delete Albums"
         });

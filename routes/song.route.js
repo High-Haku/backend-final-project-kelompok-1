@@ -8,7 +8,7 @@ router.get("/:id", getById);
 
 router.post("/", addSong);
 
-router.put("/:id", updateSongById);
+router.patch("/:id", updateSongById);
 
 router.delete("/:id", deletesongById);
 
