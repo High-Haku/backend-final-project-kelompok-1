@@ -21,7 +21,7 @@ const UserShcema = new mongoose.Schema({
   },
   image: {
     type: String,
-    default: "public\\images\\users\\default.png",
+    default: "default-profile.png",
   },
   verifiedUser: {
     type: Boolean,

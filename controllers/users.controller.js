@@ -1,7 +1,9 @@
 const Users = require("../models/users.model");
-// const validator = require("validator");
-// const bcrypt = require("bcrypt");
-// const saltRounds = 10;
+const validator = require("validator");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
+
+const { uploadFile, deleteFileStream } = require("../config/s3");
 
 const getUsers = async (req, res) => {
   try {
@@ -19,6 +21,8 @@ const getUsers = async (req, res) => {
 const getUserByID = async (req, res) => {
   try {
     const user = await Users.findById(req.params.id);
+    if (!user) return res.status(404).json({ messege: "user already deleted" });
+
     res.json({
       message: "Get data user by id success",
       user,
@@ -29,26 +33,48 @@ const getUserByID = async (req, res) => {
   }
 };
 
-const addUser = (req, res) => {
-  const data = new Users(req.body);
-  data
-    .save()
-    .then((data) => {
-      res.json({
-        msg: "register success",
-        err: null,
-        data,
+const addUser = async (req, res) => {
+  try {
+    const data = new Users(req.body);
+
+    // check email
+    if (!validator.isEmail(req.body.email))
+      return res.status(400).json({ messege: "email not valid" });
+
+    // hash password
+    data.password = await bcrypt
+      .hash(data.password, saltRounds)
+      .catch((err) => console.log(err));
+
+    // upload file to aws s3
+    if (req.file) {
+      const result = await uploadFile(req.file);
+      console.log(result);
+      data.image = result.key;
+    }
+
+    data
+      .save()
+      .then((data) => {
+        res.json({
+          msg: "register success",
+          err: null,
+          data,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400);
+        res.json({
+          msg: "register failed",
+          err,
+          data: null,
+        });
       });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(400);
-      res.json({
-        msg: "register failed",
-        err,
-        data: null,
-      });
-    });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
 };
 
 const deleteUser = async (req, res) => {
@@ -56,7 +82,10 @@ const deleteUser = async (req, res) => {
     const user = (await Users.findById(req.params.id, "-__v")) || false;
     if (!user) return res.status(404).json({ messege: "user not found" });
 
+    // delete document & delete image on aws server
     await Users.deleteOne({ _id: req.params.id });
+    await deleteFileStream(user.image);
+
     res.json({
       message: "User has been deleted",
       user,
@@ -70,12 +99,39 @@ const deleteUser = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const user = (await Users.findById(req.params.id, "-__v")) || false;
+    const data = req.body;
+
     if (!user) return res.status(404).json({ messege: "user not found" });
 
-    await Users.updateOne({ _id: req.params.id }, req.body);
+    //check jika ada password
+    if (data.password) {
+      data.password = await bcrypt
+        .hash(data.password, saltRounds)
+        .catch((err) => console.log(err));
+    }
+
+    //check email
+    if (data.email) {
+      if (!validator.isEmail(data.email))
+        return res.status(400).json({ messege: "email not valid" });
+    }
+
+    // check file dan delete file lama
+    if (req.file) {
+      const result = await uploadFile(req.file);
+      console.log(result);
+      data.image = result.key;
+
+      // delete image on aws server
+      await deleteFileStream(user.image);
+    }
+
+    // update document
+    await Users.updateOne({ _id: req.params.id }, data);
+
     res.json({
       message: "Update user Success",
-      update: req.body,
+      update: data,
     });
   } catch (error) {
     console.log(error);
@@ -83,4 +139,10 @@ const updateUser = async (req, res) => {
   }
 };
 
-module.exports = { getUsers, getUserByID, addUser, deleteUser, updateUser };
+module.exports = {
+  getUsers,
+  getUserByID,
+  addUser,
+  deleteUser,
+  updateUser,
+};

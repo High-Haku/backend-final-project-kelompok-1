@@ -1,4 +1,5 @@
 const Playlists = require("../models/playlist.model");
+const { uploadFile, deleteFileStream } = require("../config/s3");
 
 const getPlaylists = async (req, res) => {
   try {
@@ -15,10 +16,13 @@ const getPlaylists = async (req, res) => {
 
 const getPlaylistByID = async (req, res) => {
   try {
-    const users = await Playlists.findById(req.params.id);
+    const playlist = await Playlists.findById(req.params.id);
+    if (!playlist)
+      return res.status(404).json({ messege: "playlist already deleted" });
+
     res.json({
       message: "Get playlist by id success",
-      data: users,
+      data: playlist,
     });
   } catch (err) {
     console.log(err);
@@ -26,26 +30,38 @@ const getPlaylistByID = async (req, res) => {
   }
 };
 
-const addPlaylist = (req, res) => {
-  const data = new Playlists(req.body);
-  data
-    .save()
-    .then((data) => {
-      res.json({
-        msg: "playlist has been created",
-        err: null,
-        data,
+const addPlaylist = async (req, res) => {
+  try {
+    const data = new Playlists(req.body);
+
+    // upload file to aws s3
+    if (req.file) {
+      const result = await uploadFile(req.file);
+      console.log(result);
+      data.image = result.key;
+    }
+
+    data
+      .save()
+      .then((data) => {
+        res.json({
+          msg: "playlist has been created",
+          err: null,
+          data,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500);
+        res.json({
+          msg: "create playlist failed",
+          err,
+          data: null,
+        });
       });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500);
-      res.json({
-        msg: "create playlist failed",
-        err,
-        data: null,
-      });
-    });
+  } catch (error) {
+    console.log(error), res.sendStatus(500);
+  }
 };
 
 const deletePlaylist = async (req, res) => {
@@ -54,7 +70,10 @@ const deletePlaylist = async (req, res) => {
     if (!playlist)
       return res.status(404).json({ messege: "playlist not found" });
 
+    // delete document & delete image on aws server
     await Playlists.deleteOne({ _id: req.params.id });
+    await deleteFileStream(playlist.image);
+
     res.json({
       message: "playlist has been deleted",
       playlist,
@@ -67,17 +86,32 @@ const deletePlaylist = async (req, res) => {
 
 const updatePLaylist = async (req, res) => {
   try {
-    const user = (await Playlists.findById(req.params.id, "-__v")) || false;
-    if (!user) return res.status(404).json({ messege: "user not found" });
+    const playlist = (await Playlists.findById(req.params.id, "-__v")) || false;
+    const data = req.body;
 
-    await Playlists.updateOne({ _id: req.params.id }, req.body);
+    if (!playlist)
+      return res.status(404).json({ messege: "playlist not found" });
+
+    // check file dan delete file lama
+    if (req.file) {
+      const result = await uploadFile(req.file);
+      console.log(result);
+      data.image = result.key;
+
+      // delete image on aws server
+      await deleteFileStream(playlist.image);
+    }
+
+    // update document
+    await Playlists.updateOne({ _id: req.params.id }, data);
+
     res.json({
-      message: "Update user Success",
-      update: req.body,
+      message: "Update playlist Success",
+      update: data,
     });
   } catch (error) {
     console.log(error);
-    res.status(400).json({ messege: "invalid user id" });
+    res.status(400).json({ messege: "invalid playlist id" });
   }
 };
 

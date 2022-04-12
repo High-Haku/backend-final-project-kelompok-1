@@ -7,7 +7,7 @@ const PlaylistSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    default: "public\\images\\playlists\\default.png",
+    default: "default-playlist.jpg",
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
