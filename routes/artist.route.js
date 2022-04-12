@@ -14,7 +14,7 @@ router.get("/:id", getById);
 
 router.post("/", addArtist);
 
-router.put("/:id", updateArtistById);
+router.patch("/:id", updateArtistById);
 
 router.delete("/:id", deleteArtistById);
 
