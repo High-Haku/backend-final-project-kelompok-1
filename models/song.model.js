@@ -10,8 +10,8 @@ const songsSchema = new mongoose.Schema({
         required: true
     },
     albums: {
-        type: String,
-        // ref: "albums",
+        type: mongoose.Types.ObjectId,
+        ref: "albums",
         required: true
     },
     fileMusic: {
