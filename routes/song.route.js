@@ -1,8 +1,14 @@
-const express = require('express')
+const express = require("express");
 const router = express.Router();
-const { getAll, getById, addSong, updateSongById, deletesongById } = require('../controllers/song.controller')
+const {
+  getAll,
+  getById,
+  addSong,
+  updateSongById,
+  deletesongById,
+} = require("../controllers/song.controller");
 
-router.get('/', getAll)
+router.get("/", getAll);
 
 router.get("/:id", getById);
 
