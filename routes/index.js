@@ -10,26 +10,40 @@ const {
 // Router Import
 const usersRouter = require("./user.router");
 const playlistsRouter = require("./playlist.router");
+const songRouter = require("./song.route");
+const albumRouter = require("./album.route");
+const artistRoute = require("./artist.route");
+const { getFileStream } = require("../config/s3");
 
 // route
 router.use("/users", usersRouter);
 router.use("/playlists", playlistsRouter);
 
-router.use('/song', songRouter)
-router.use('/album', albumRouter)
-router.use('/artist', artistRoute)
+router.use("/song", songRouter);
+router.use("/album", albumRouter);
+router.use("/artist", artistRoute);
 
 // deezer route
 router.get("/chart", getTopChart);
 router.get("/search", searchOnDeezer);
 
-const songRouter = require("./song.route")
-const albumRouter = require("./album.route")
-const artistRoute = require("./artist.route")
+// images route
+router.get("/images/:key", (req, res) => {
+  try {
+    const key = req.params.key;
+    const readStream = getFileStream(key).on("error", (error) => {
+      console.log(error);
+      return res.sendStatus(404);
+    });
+    readStream.pipe(res);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
 
 router.get("*", (req, res) => {
   res.sendStatus(404);
 });
-
 
 module.exports = router;

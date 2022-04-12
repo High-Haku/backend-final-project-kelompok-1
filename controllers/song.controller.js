@@ -2,8 +2,8 @@ const { Songs } = require("../models/index");
 
 module.exports = {
   getAll: async (req, res) => {
-    const data = await Songs.find({}, "-__v")
     try {
+      const data = await Songs.find({}, "-__v");
       res.json({
         message: "Succes get All SOngs",
         data: data,
@@ -14,8 +14,8 @@ module.exports = {
     }
   },
   getById: async (req, res) => {
-    const data = await Songs.findById(req.params.id, "-__v")
     try {
+      const data = await Songs.findById(req.params.id, "-__v");
       res.json({
         message: "Succes get All SOngs By ID",
         data: data,
@@ -26,41 +26,39 @@ module.exports = {
     }
   },
   addSong: async (req, res) => {
-    const data = req.body;
-
-      try {
-        await Songs.create(data);
-        res.json({
-          message: "Succes add SOngs"
-        });
-      } catch (err) {
-        console.log(err);
-        res.status(500).send(err);
-      }
+    try {
+      const data = req.body;
+      await Songs.create(data);
+      res.json({
+        message: "Succes add SOngs",
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err);
+    }
   },
 
   updateSongById: async (req, res) => {
+    try {
       await Songs.updateOne({ _id: req.params.id }, { $set: req.body });
-      try {
-        res.json({
-          message: "Succes Update SOngs"
-        });
-      } catch (err) {
-        console.log(err);
-        res.status(400).send(err);
-      }
+      res.json({
+        message: "Succes Update SOngs",
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(400).send(err);
+    }
   },
 
   deletesongById: async (req, res) => {
-
+    try {
       await Songs.deleteOne({ _id: req.params.id });
-      try {
-        res.json({
-          message: "Succes delete SOngs"
-        });
-      } catch (err) {
-        console.log(err);
-        res.status(500).send(err);
-      }
-  }
+      res.json({
+        message: "Succes delete SOngs",
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err);
+    }
+  },
 };
