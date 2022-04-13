@@ -22,6 +22,11 @@ router.post("/", async (req, res) => {
         { email: user.email, role: user.role },
         accessTokenSecret
       );
+
+      res.cookie("cookie", accessToken, {
+        maxAge: 30 * 60 * 1000,
+      });
+
       res.json({
         accessToken,
       });

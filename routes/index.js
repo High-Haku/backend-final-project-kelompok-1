@@ -22,7 +22,6 @@ const loginRoute = require("./login.route");
 
 // route
 router.use("/login", loginRoute);
-
 router.use(authenticateJWT);
 router.use("/users", usersRouter);
 router.use("/users", usersRoute);
