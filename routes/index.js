@@ -20,9 +20,9 @@ const loginRoute = require("./login.route");
 // route
 router.use('/login', loginRoute)
 
+router.use("/users", usersRouter);
 router.use(authenticateJWT)
 
-router.use("/users", usersRouter);
 router.use("/playlists", playlistsRouter);
 
 router.use('/song', songRouter)
