@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router()
 
-const {getAllTransaction, getTransactionByID, addTransaction, deleteTransactionByID, updateTransactionByID} = require('./controller/transactions.controller');
+const {getAllTransaction, getTransactionByID, addTransaction, deleteTransactionByID, updateTransactionByID} = require('../controllers/transactions.controller');
 
 router.get("/", getAllTransaction);
 router.get("/:id", getTransactionByID);
