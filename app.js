@@ -17,10 +17,13 @@ mongoose
 
 // MiddleWare //
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use("/public", express.static("public"));
 app.use(cors());
+//////////////////////////////////////
 
-app.get("/", (req, res) => {
-  res.send("Server Oke");
+app.get("/", async (req, res) => {
+  res.send("oke");
 });
 
 const allRouter = require("./routes");
