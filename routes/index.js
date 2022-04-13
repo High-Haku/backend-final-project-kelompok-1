@@ -22,7 +22,7 @@ const loginRoute = require("./login.route");
 
 // route
 router.use("/login", loginRoute);
-router.use("/users", usersRouter);
+router.use("/users", usersRoute);
 
 router.use(authenticateJWT);
 router.use("/playlists", playlistsRoute);
