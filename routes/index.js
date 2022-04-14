@@ -19,12 +19,12 @@ const commentsRoute = require("./comment.route");
 const messagesRoute = require("./message.route");
 const postingRoute = require("./posting.route");
 const loginRoute = require("./login.route");
+const transactionsRoute = require("./transaction.route");
 
 // route
 router.use("/login", loginRoute);
 
 router.use(authenticateJWT);
-router.use("/users", usersRouter);
 router.use("/users", usersRoute);
 router.use("/playlists", playlistsRoute);
 router.use("/songs", songRoute);
@@ -33,6 +33,7 @@ router.use("/artists", artistRoute);
 router.use("/comments", commentsRoute);
 router.use("/messages", messagesRoute);
 router.use("/posting", postingRoute);
+router.use("/transactions", transactionsRoute);
 
 // deezer route
 router.get("/chart", getTopChart);

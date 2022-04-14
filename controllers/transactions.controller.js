@@ -53,7 +53,7 @@ const addTransaction = async (req, res) => {
     });
 };
 
-const updateTransactionsByID = async (req, res) => {
+const updateTransactionById = async (req, res) => {
   try {
     await Transactions.updateOne(
       { _id: req.params.id },
@@ -68,7 +68,7 @@ const updateTransactionsByID = async (req, res) => {
   }
 };
 
-const deleteTransactionByID = async (req, res) => {
+const deleteTransactionById = async (req, res) => {
   const data = await Transactions.findById(req.params.id).catch((err) => err);
   console.log(data);
   Transactions.deleteOne({ _id: req.params.id })
@@ -101,6 +101,6 @@ module.exports = {
  getAllTransaction,
  getTransactionById,
  addTransaction,
- updateTransactionsByID,
- deleteTransactionByID,
+ updateTransactionById,
+ deleteTransactionById,
 };
