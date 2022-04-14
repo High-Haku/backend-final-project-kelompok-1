@@ -19,6 +19,7 @@ const commentsRoute = require("./comment.route");
 const messagesRoute = require("./message.route");
 const postingRoute = require("./posting.route");
 const loginRoute = require("./login.route");
+const transactionsRoute = require("./transaction.route");
 
 // images route
 router.get("/images/:key", (req, res) => {
@@ -40,6 +41,7 @@ router.use("/login", loginRoute);
 router.use("/users", usersRoute);
 
 router.use(authenticateJWT);
+router.use("/users", usersRoute);
 router.use("/playlists", playlistsRoute);
 router.use("/songs", songRoute);
 router.use("/albums", albumRoute);
@@ -47,6 +49,7 @@ router.use("/artists", artistRoute);
 router.use("/comments", commentsRoute);
 router.use("/messages", messagesRoute);
 router.use("/posting", postingRoute);
+router.use("/transactions", transactionsRoute);
 
 // deezer route
 router.get("/chart", getTopChart);
