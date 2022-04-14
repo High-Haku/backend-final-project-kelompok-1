@@ -7,6 +7,6 @@ router.get("/", getAllTransaction);
 router.get("/:id", getTransactionById);
 router.delete("/:id", deleteTransactionById);
 router.post("/", addTransaction);
-router.post("/:id", updateTransactionById);
+router.patch("/:id", updateTransactionById);
 
 module.exports = router;

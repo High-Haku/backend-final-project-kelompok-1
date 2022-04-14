@@ -12,16 +12,17 @@ router.post("/", async (req, res) => {
   const user = await userModels.findOne({ email: email });
   const unHAsh = bcrypt.compareSync(password, user.password);
 
-  res.cookie("cookie", accessToken, {
-    maxAge: 30 * 60 * 1000,
-  });
-
   try {
     if (user && unHAsh) {
       const accessToken = jwt.sign(
         { email: user.email, role: user.role },
-        accessTokenSecret
+        process.env.ACCESS_TOKEN_SECRET
       );
+
+      res.cookie("cookie", accessToken, {
+        maxAge: 30 * 60 * 1000,
+      });
+
       res.json({
         accessToken,
       });

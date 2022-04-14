@@ -21,8 +21,24 @@ const postingRoute = require("./posting.route");
 const loginRoute = require("./login.route");
 const transactionsRoute = require("./transaction.route");
 
+// images route
+router.get("/images/:key", (req, res) => {
+  try {
+    const key = req.params.key;
+    const readStream = getFileStream(key).on("error", (error) => {
+      console.log(error);
+      return res.sendStatus(404);
+    });
+    readStream.pipe(res);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
 // route
 router.use("/login", loginRoute);
+router.use("/users", usersRoute);
 
 router.use(authenticateJWT);
 router.use("/users", usersRoute);
@@ -38,21 +54,6 @@ router.use("/transactions", transactionsRoute);
 // deezer route
 router.get("/chart", getTopChart);
 router.get("/search", searchOnDeezer);
-
-// images route
-router.get("/images/:key", (req, res) => {
-  try {
-    const key = req.params.key;
-    const readStream = getFileStream(key).on("error", (error) => {
-      console.log(error);
-      return res.sendStatus(404);
-    });
-    readStream.pipe(res);
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
-  }
-});
 
 router.get("*", (req, res) => {
   res.sendStatus(404);
