@@ -3,7 +3,7 @@ const SpotifyWebApi = require("spotify-web-api-node");
 const router = express.Router();
 
 router.post("/", (req, res) => {
-  //return console.log(req.body.code);
+  // return console.log(req.body.code);
   try {
     const code = req.body.code;
     const spotifyApi = new SpotifyWebApi({
