@@ -3,6 +3,7 @@ const router = express.Router();
 const path = require("path");
 const authenticateJWT = require("../config/auth");
 const { getFileStream } = require("../config/s3");
+const { getToken, deleteToken } = require("../controllers/token.controller");
 
 const {
   getTopChart,
@@ -40,7 +41,13 @@ router.get("/images/:key", (req, res) => {
 // route
 router.use("/login", loginRoute);
 router.use("/users", usersRoute);
+router.get("/token", getToken);
+router.get("/logout", deleteToken);
 
+// spotify route
+router.use("/spotify", spotifyRoute);
+
+// login route
 router.use(authenticateJWT);
 router.use("/users", usersRoute);
 router.use("/playlists", playlistsRoute);
@@ -51,9 +58,6 @@ router.use("/comments", commentsRoute);
 router.use("/messages", messagesRoute);
 router.use("/posting", postingRoute);
 router.use("/transactions", transactionsRoute);
-
-// spotify route
-router.use("/spotify", spotifyRoute);
 
 // deezer route
 router.get("/chart", getTopChart);
