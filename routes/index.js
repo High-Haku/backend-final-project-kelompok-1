@@ -21,6 +21,7 @@ const postingRoute = require("./posting.route");
 const loginRoute = require("./login.route");
 const transactionsRoute = require("./transaction.route");
 const spotifyRoute = require("./spotify.route");
+const { route } = require("./user.router");
 
 // images route
 router.get("/images/:key", (req, res) => {
@@ -58,5 +59,6 @@ router.use("/spotify", spotifyRoute);
 // deezer route
 router.get("/chart", getTopChart);
 router.get("/search", searchOnDeezer);
+
 
 module.exports = router;
