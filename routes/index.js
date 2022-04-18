@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const path = require("path");
 const authenticateJWT = require("../config/auth");
 const { getFileStream } = require("../config/s3");
 const { getToken, deleteToken } = require("../controllers/token.controller");
@@ -23,8 +22,8 @@ const loginRoute = require("./login.route");
 const transactionsRoute = require("./transaction.route");
 const spotifyRoute = require("./spotify.route");
 
-// images route
-router.get("/images/:key", (req, res) => {
+// w3 route get file
+router.get("/s3/:key", (req, res) => {
   try {
     const key = req.params.key;
     const readStream = getFileStream(key).on("error", (error) => {
