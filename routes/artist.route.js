@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+const { imageFilter, imageStorage } = require("../config/multerConfig");
+
 const {
   getAll,
   getById,
@@ -9,12 +12,27 @@ const {
 } = require("../controllers/artist.controller");
 
 router.get("/", getAll);
-
 router.get("/:id", getById);
 
-router.post("/", addArtist);
+router.post(
+  "/",
+  multer({
+    storage: imageStorage,
+    limits: { fileSize: 1024 * 1024 * 2 },
+    fileFilter: imageFilter,
+  }).single("image"),
+  addArtist
+);
 
-router.patch("/:id", updateArtistById);
+router.patch(
+  "/:id",
+  multer({
+    storage: imageStorage,
+    limits: { fileSize: 1024 * 1024 * 2 },
+    fileFilter: imageFilter,
+  }).single("image"),
+  updateArtistById
+);
 
 router.delete("/:id", deleteArtistById);
 

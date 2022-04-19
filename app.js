@@ -1,8 +1,9 @@
 const express = require("express");
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 const cors = require("cors");
 const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
 // Database Connect
@@ -16,10 +17,16 @@ mongoose
   });
 
 // MiddleWare //
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "https://melodico.netlify.app"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use("/public", express.static("public"));
-app.use(cors());
 //////////////////////////////////////
 
 app.get("/", async (req, res) => {

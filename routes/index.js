@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const path = require("path");
 const authenticateJWT = require("../config/auth");
 const { getFileStream } = require("../config/s3");
+const { getToken, deleteToken } = require("../controllers/token.controller");
 
 const {
   getTopChart,
@@ -19,27 +19,11 @@ const commentsRoute = require("./comment.route");
 const messagesRoute = require("./message.route");
 const postingRoute = require("./posting.route");
 const loginRoute = require("./login.route");
+const transactionsRoute = require("./transaction.route");
+const spotifyRoute = require("./spotify.route");
 
-// route
-router.use("/login", loginRoute);
-
-router.use(authenticateJWT);
-router.use("/users", usersRouter);
-router.use("/users", usersRoute);
-router.use("/playlists", playlistsRoute);
-router.use("/songs", songRoute);
-router.use("/albums", albumRoute);
-router.use("/artists", artistRoute);
-router.use("/comments", commentsRoute);
-router.use("/messages", messagesRoute);
-router.use("/posting", postingRoute);
-
-// deezer route
-router.get("/chart", getTopChart);
-router.get("/search", searchOnDeezer);
-
-// images route
-router.get("/images/:key", (req, res) => {
+// w3 route get file
+router.get("/s3/:key", (req, res) => {
   try {
     const key = req.params.key;
     const readStream = getFileStream(key).on("error", (error) => {
@@ -53,8 +37,29 @@ router.get("/images/:key", (req, res) => {
   }
 });
 
-router.get("*", (req, res) => {
-  res.sendStatus(404);
-});
+// route
+router.use("/login", loginRoute);
+router.use("/users", usersRoute);
+router.get("/token", getToken);
+router.get("/logout", deleteToken);
+
+// spotify route
+router.use("/spotify", spotifyRoute);
+
+// login route
+router.use(authenticateJWT);
+router.use("/users", usersRoute);
+router.use("/playlists", playlistsRoute);
+router.use("/songs", songRoute);
+router.use("/albums", albumRoute);
+router.use("/artists", artistRoute);
+router.use("/comments", commentsRoute);
+router.use("/messages", messagesRoute);
+router.use("/posting", postingRoute);
+router.use("/transactions", transactionsRoute);
+
+// deezer route
+router.get("/chart", getTopChart);
+router.get("/search", searchOnDeezer);
 
 module.exports = router;
