@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
       );
 
       res.cookie("token", accessToken, {
-        httpOnly: true,
+        httpOnly: false,
         secure: true,
         sameSite: "none",
         maxAge: 30 * 60 * 60 * 1000,
