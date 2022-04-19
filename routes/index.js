@@ -47,7 +47,6 @@ router.get("/logout", deleteToken);
 // spotify route
 router.use("/spotify", spotifyRoute);
 
-router.use("/posting", postingRoute);
 // login route
 router.use(authenticateJWT);
 router.use("/users", usersRoute);
@@ -56,12 +55,12 @@ router.use("/songs", songRoute);
 router.use("/albums", albumRoute);
 router.use("/artists", artistRoute);
 router.use("/comments", commentsRoute);
+router.use("/posting", postingRoute);
 router.use("/messages", messagesRoute);
 router.use("/transactions", transactionsRoute);
 
 // deezer route
 router.get("/chart", getTopChart);
 router.get("/search", searchOnDeezer);
-
 
 module.exports = router;

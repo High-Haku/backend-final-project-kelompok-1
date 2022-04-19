@@ -48,6 +48,7 @@ function deleteFileStream(key) {
     case "default-playlist.jpg":
     case "default-profile.png":
       return;
+    default:
   }
 
   s3.deleteObject(
