@@ -1,4 +1,3 @@
-const Users = require("../models/users.model");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
@@ -9,7 +8,7 @@ const getToken = (req, res) => {
       if (error) {
         return res.status(404).json({ message: "invalid token" });
       }
-      res.json(user);
+      res.json({ ...user, token });
     });
   } catch (error) {
     console.log(error);
