@@ -15,13 +15,20 @@ router.post("/", async (req, res) => {
 
     if (user && unHAsh) {
       const accessToken = jwt.sign(
-        { email: user.email, role: user.role, image: user.image },
+        {
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          image: user.image,
+          id: user._id,
+        },
         process.env.ACCESS_TOKEN_SECRET
       );
 
       res.cookie("token", accessToken, {
-        httpOnly: false,
-        secure: false,
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
         maxAge: 30 * 60 * 60 * 1000,
       });
 
