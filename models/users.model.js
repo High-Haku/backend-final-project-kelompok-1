@@ -27,6 +27,10 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  bio: {
+    type: String,
+    default: "",
+  },
   favoriteSongs: {
     type: [mongoose.Schema.Types.ObjectId],
     ref: "songs",
