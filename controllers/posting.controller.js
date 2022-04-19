@@ -2,8 +2,8 @@ const Posting = require("../models/posting.model");
 
 module.exports = {
   getAll: async (req, res) => {
-    const data = await Posting.find({}, "-__v");
     try {
+      const data = await Posting.find({}, "-__v");
       res.json({
         message: "Succes get All Posting",
         data: data,
@@ -15,8 +15,8 @@ module.exports = {
   },
 
   getById: async (req, res) => {
-    const data = await Posting.findById(req.params.id, "-__v");
     try {
+      const data = await Posting.findById(req.params.id, "-__v");
       res.json({
         message: "Succes get All posting by ID",
         data: data,
@@ -28,8 +28,8 @@ module.exports = {
   },
 
   addPosting: async (req, res) => {
-    const data = req.body;
     try {
+      const data = req.body;
       await Posting.create(data);
       res.json({
         message: "Succes add posting",
@@ -41,8 +41,8 @@ module.exports = {
   },
 
   updatePostingById: async (req, res) => {
-    await Posting.updateOne({ _id: req.params.id }, { $set: req.body });
     try {
+      await Posting.updateOne({ _id: req.params.id }, { $set: req.body });
       res.json({
         messege: "Succes Update posting",
       });
@@ -53,8 +53,8 @@ module.exports = {
   },
 
   deletePostingById: async (req, res) => {
-    await Posting.deleteOne({ _id: req.params.id });
     try {
+      await Posting.deleteOne({ _id: req.params.id });
       res.json({
         message: "Succes delete Message",
       });
