@@ -3,7 +3,7 @@ const Posting = require("../models/posting.model");
 module.exports = {
   getAll: async (req, res) => {
     try {
-      const data = await Posting.find({}, "-__v");
+      const data = await Posting.find({}, "-__v").sort({ postDate: -1 });
       res.json({
         message: "Succes get All Posting",
         data: data,
