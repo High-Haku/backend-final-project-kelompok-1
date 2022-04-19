@@ -5,8 +5,8 @@ module.exports = {
   getAll: async (req, res) => {
     try {
       const data = await Artists.find({}, "-__v")
-        .populate("songs", "title -_id")
-        .populate("albums", "name -_id");
+        .populate("songs", "title")
+        .populate("albums", "name");
       res.json({
         message: "Succes get All Artist",
         data: data,
@@ -19,8 +19,8 @@ module.exports = {
   getById: async (req, res) => {
     try {
       const data = await Artists.findById(req.params.id, "-__v")
-        .populate("songs", "title -_id")
-        .populate("albums", "name -_id");
+        .populate("songs", "title")
+        .populate("albums", "name");
       res.json({
         message: "Succes get All Artist By ID",
         data: data,
