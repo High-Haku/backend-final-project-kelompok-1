@@ -21,6 +21,7 @@ const postingRoute = require("./posting.route");
 const loginRoute = require("./login.route");
 const transactionsRoute = require("./transaction.route");
 const spotifyRoute = require("./spotify.route");
+const { route } = require("./user.router");
 
 // w3 route get file
 router.get("/s3/:key", (req, res) => {
@@ -46,6 +47,7 @@ router.get("/logout", deleteToken);
 // spotify route
 router.use("/spotify", spotifyRoute);
 
+router.use("/posting", postingRoute);
 // login route
 router.use(authenticateJWT);
 router.use("/users", usersRoute);
@@ -55,11 +57,11 @@ router.use("/albums", albumRoute);
 router.use("/artists", artistRoute);
 router.use("/comments", commentsRoute);
 router.use("/messages", messagesRoute);
-router.use("/posting", postingRoute);
 router.use("/transactions", transactionsRoute);
 
 // deezer route
 router.get("/chart", getTopChart);
 router.get("/search", searchOnDeezer);
+
 
 module.exports = router;
