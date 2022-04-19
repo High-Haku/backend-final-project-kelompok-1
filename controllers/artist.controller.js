@@ -4,7 +4,18 @@ const { uploadFile, deleteFileStream } = require("../config/s3");
 module.exports = {
   getAll: async (req, res) => {
     try {
+      let limit = 20;
+      let offset = 0;
+
+      // Search By Query ////////////////
+      if (Object.keys(req.query).length !== 0) {
+        limit = req.query.limit;
+        offset = req.query.offset;
+      }
+
       const data = await Artists.find({}, "-__v")
+        .skip(offset)
+        .limit(limit)
         .populate("songs", "title")
         .populate("albums", "name");
       res.json({

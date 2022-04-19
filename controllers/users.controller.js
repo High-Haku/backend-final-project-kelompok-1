@@ -7,7 +7,14 @@ const { uploadFile, deleteFileStream } = require("../config/s3");
 
 const getUsers = async (req, res) => {
   try {
-    const users = await Users.find({}, "-__v");
+    let limit = 20;
+
+    // Search By Query ////////////////
+    if (Object.keys(req.query).length !== 0) {
+      limit = req.query.limit;
+    }
+
+    const users = await Users.find({}, "-__v").limit(limit);
     res.json({
       message: "Get users data success",
       users,

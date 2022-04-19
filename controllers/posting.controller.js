@@ -3,7 +3,16 @@ const Posting = require("../models/posting.model");
 module.exports = {
   getAll: async (req, res) => {
     try {
-      const data = await Posting.find({}, "-__v").sort({ postDate: -1 });
+      let limit = 20;
+
+      // Search By Query ////////////////
+      if (Object.keys(req.query).length !== 0) {
+        limit = req.query.limit;
+      }
+
+      const data = await Posting.find({}, "-__v")
+        .sort({ postDate: -1 })
+        .limit(limit);
       res.json({
         message: "Succes get All Posting",
         data: data,
