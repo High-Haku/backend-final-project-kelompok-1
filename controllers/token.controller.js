@@ -19,6 +19,10 @@ const getToken = (req, res) => {
 const deleteToken = (req, res) => {
   try {
     res.clearCookie("token");
+    res.clearCookie("token", {
+      path: "/",
+      domain: "https://melodico.herokuapp.com",
+    });
     res.sendStatus(200);
   } catch (error) {
     console.log(error);
