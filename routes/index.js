@@ -42,7 +42,7 @@ router.get("/s3/:key", (req, res) => {
 router.use("/login", loginRoute);
 router.use("/users", usersRoute);
 router.get("/token", getToken);
-router.get("/logout", deleteToken);
+router.delete("/logout", deleteToken);
 
 // spotify route
 router.use("/spotify", spotifyRoute);
