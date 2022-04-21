@@ -5,6 +5,7 @@ const { audioFilter, audioStorage } = require("../config/multerConfig");
 
 const {
   getAll,
+  getSample,
   getById,
   addSong,
   updateSongById,
@@ -12,6 +13,7 @@ const {
 } = require("../controllers/song.controller");
 
 router.get("/", getAll);
+router.get("/sample", getSample);
 router.get("/:id", getById);
 
 router.post(

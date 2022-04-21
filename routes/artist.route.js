@@ -9,9 +9,11 @@ const {
   addArtist,
   updateArtistById,
   deleteArtistById,
+  getSample,
 } = require("../controllers/artist.controller");
 
 router.get("/", getAll);
+router.get("/sample", getSample);
 router.get("/:id", getById);
 
 router.post(

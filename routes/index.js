@@ -3,6 +3,8 @@ const router = express.Router();
 const authenticateJWT = require("../config/auth");
 const { getFileStream } = require("../config/s3");
 const { getToken, deleteToken } = require("../controllers/token.controller");
+const fs = require("fs");
+const path = require("path");
 
 const {
   getTopChart,
@@ -21,7 +23,6 @@ const postingRoute = require("./posting.route");
 const loginRoute = require("./login.route");
 const transactionsRoute = require("./transaction.route");
 const spotifyRoute = require("./spotify.route");
-const { route } = require("./user.router");
 
 // w3 route get file
 router.get("/s3/:key", (req, res) => {
@@ -31,10 +32,37 @@ router.get("/s3/:key", (req, res) => {
       console.log(error);
       return res.sendStatus(404);
     });
+
+    console.log(readStream);
+
+    res.set({
+      "Content-Range": "bytes 0 - 6345229",
+      "Content-Length": "6345229",
+      "Cache-Control": "max-age=1209600",
+      "Accept-Ranges": "bytes",
+      "Content-Type": "audio/mpeg",
+    });
+
+    console.log(res);
+
     readStream.pipe(res);
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
+  }
+});
+
+router.get("/test", (req, res) => {
+  try {
+    const file = path.dirname();
+    console.log(file);
+    fs.exists(file, (exists) => {
+      console.log(exists);
+    });
+    res.send("oke");
+  } catch (error) {
+    console.log(error);
+    res.send("oke");
   }
 });
 
