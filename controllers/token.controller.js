@@ -1,4 +1,3 @@
-const Users = require("../models/users.model");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
@@ -9,7 +8,7 @@ const getToken = (req, res) => {
       if (error) {
         return res.status(404).json({ message: "invalid token" });
       }
-      res.json(user);
+      res.json({ ...user, token });
     });
   } catch (error) {
     console.log(error);
@@ -20,6 +19,12 @@ const getToken = (req, res) => {
 const deleteToken = (req, res) => {
   try {
     res.clearCookie("token");
+    res.cookie("token", "", {
+      httpOnly: false,
+      secure: true,
+      sameSite: "none",
+      maxAge: 0,
+    });
     res.sendStatus(200);
   } catch (error) {
     console.log(error);

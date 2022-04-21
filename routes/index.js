@@ -3,6 +3,8 @@ const router = express.Router();
 const authenticateJWT = require("../config/auth");
 const { getFileStream } = require("../config/s3");
 const { getToken, deleteToken } = require("../controllers/token.controller");
+const fs = require("fs");
+const path = require("path");
 
 const {
   getTopChart,
@@ -21,16 +23,24 @@ const postingRoute = require("./posting.route");
 const loginRoute = require("./login.route");
 const transactionsRoute = require("./transaction.route");
 const spotifyRoute = require("./spotify.route");
-const { route } = require("./user.router");
 
 // w3 route get file
-router.get("/s3/:key", (req, res) => {
+router.get("/music/:key", (req, res) => {
   try {
     const key = req.params.key;
     const readStream = getFileStream(key).on("error", (error) => {
       console.log(error);
       return res.sendStatus(404);
     });
+
+    res.set({
+      "Content-Range": "bytes 0 - 6345229",
+      "Content-Length": "6345229",
+      "Cache-Control": "max-age=1209600",
+      "Accept-Ranges": "bytes",
+      "Content-Type": "audio/mpeg",
+    });
+
     readStream.pipe(res);
   } catch (error) {
     console.log(error);
@@ -38,11 +48,44 @@ router.get("/s3/:key", (req, res) => {
   }
 });
 
+router.get("/images/:key", (req, res) => {
+  try {
+    const key = req.params.key;
+    const readStream = getFileStream(key).on("error", (error) => {
+      console.log(error);
+      return res.sendStatus(404);
+    });
+
+    res.set({
+      "Cache-Control": "max-age=3600",
+    });
+
+    readStream.pipe(res);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+router.get("/test", (req, res) => {
+  try {
+    const file = path.dirname();
+    console.log(file);
+    fs.exists(file, (exists) => {
+      console.log(exists);
+    });
+    res.send("oke");
+  } catch (error) {
+    console.log(error);
+    res.send("oke");
+  }
+});
+
 // route
 router.use("/login", loginRoute);
 router.use("/users", usersRoute);
 router.get("/token", getToken);
-router.get("/logout", deleteToken);
+router.delete("/logout", deleteToken);
 
 // spotify route
 router.use("/spotify", spotifyRoute);

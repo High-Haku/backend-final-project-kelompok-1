@@ -7,10 +7,38 @@ const { uploadFile, deleteFileStream } = require("../config/s3");
 
 const getUsers = async (req, res) => {
   try {
-    const users = await Users.find({}, "-__v");
+    let limit = 20;
+
+    // Search By Query ////////////////
+    if (Object.keys(req.query).length !== 0) {
+      limit = req.query.limit;
+    }
+
+    const users = await Users.find({}, "-__v").limit(limit);
     res.json({
       message: "Get users data success",
       users,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
+};
+
+const getSample = async (req, res) => {
+  try {
+    let limit = 20;
+
+    // Limit By Query ////////////////
+    if (Object.keys(req.query).length !== 0) {
+      limit = req.query.limit;
+    }
+
+    Users.findRandom({}, {}, { limit }, (err, results) => {
+      res.json({
+        message: "Success get Users Sample",
+        users: results,
+      });
     });
   } catch (err) {
     console.log(err);
@@ -96,6 +124,41 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const addToMyFavorite = async (req, res) => {
+  try {
+    const user = (await Users.findById(req.params.id, "-__v")) || false;
+    const newFavorite = req.body.favoriteSongs;
+    let isFound = false;
+
+    if (!user) return res.status(404).json({ messege: "user not found" });
+
+    user.favoriteSongs.forEach((song) => {
+      if (song.toString() === newFavorite) {
+        isFound = true;
+      }
+    });
+
+    if (!isFound) {
+      // update document
+      await Users.updateOne(
+        { _id: req.params.id },
+        { favoriteSongs: [...user.favoriteSongs, newFavorite] }
+      );
+
+      res.json({
+        message: "Update user Success",
+      });
+    } else {
+      return res
+        .status(400)
+        .json({ messege: "Song has been in your favorite" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ messege: "invalid user id" });
+  }
+};
+
 const updateUser = async (req, res) => {
   try {
     const user = (await Users.findById(req.params.id, "-__v")) || false;
@@ -145,4 +208,6 @@ module.exports = {
   addUser,
   deleteUser,
   updateUser,
+  getSample,
+  addToMyFavorite,
 };

@@ -4,7 +4,24 @@ const { uploadFile, deleteFileStream } = require("../config/s3");
 module.exports = {
   getAll: async (req, res) => {
     try {
-      const data = await Albums.find({}, "-__v")
+      let limit = 20;
+      let offset = 0;
+      let query = {};
+
+      // Search By Query ////////////////
+      if (Object.keys(req.query).length !== 0) {
+        limit = req.query.limit;
+        offset = req.query.offset;
+
+        if (req.query.search) {
+          const regex = new RegExp(`.*${req.query.search}.*`, "gi");
+          query = { name: { $regex: regex } };
+        }
+      }
+
+      const data = await Albums.find(query, "-__v")
+        .skip(offset)
+        .limit(limit)
         .populate("songs", "title -_id")
         .populate("artist", "name -_id");
 

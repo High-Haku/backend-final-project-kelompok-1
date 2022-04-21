@@ -3,7 +3,17 @@ const Posting = require("../models/posting.model");
 module.exports = {
   getAll: async (req, res) => {
     try {
-      const data = await Posting.find({}, "-__v").sort({ postDate: -1 });
+      let limit = 20;
+
+      // Search By Query ////////////////
+      if (Object.keys(req.query).length !== 0) {
+        limit = req.query.limit;
+      }
+
+      const data = await Posting.find({}, "-__v")
+        .sort({ postDate: -1 })
+        .limit(limit)
+        .populate("postedBy", " image name");
       res.json({
         message: "Succes get All Posting",
         data: data,
@@ -16,7 +26,10 @@ module.exports = {
 
   getById: async (req, res) => {
     try {
-      const data = await Posting.findById(req.params.id, "-__v");
+      const data = await Posting.findById(req.params.id, "-__v").populate(
+        "postedBy",
+        " image name"
+      );
       res.json({
         message: "Succes get All posting by ID",
         data: data,

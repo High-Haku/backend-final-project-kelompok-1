@@ -4,7 +4,24 @@ const { uploadFile, deleteFileStream } = require("../config/s3");
 module.exports = {
   getAll: async (req, res) => {
     try {
-      const data = await Songs.find({}, "-__v")
+      let limit = 20;
+      let offset = 0;
+      let query = {};
+
+      // Search By Query ////////////////
+      if (Object.keys(req.query).length !== 0) {
+        limit = req.query.limit;
+        offset = req.query.offset;
+
+        if (req.query.search) {
+          const regex = new RegExp(`.*${req.query.search}.*`, "gi");
+          query = { title: { $regex: regex } };
+        }
+      }
+
+      const data = await Songs.find(query, "-__v")
+        .skip(offset)
+        .limit(limit)
         .populate("artist", "name image")
         .populate("album", "name image");
 
@@ -12,6 +29,31 @@ module.exports = {
         message: "Success get All Songs",
         songs: data,
       });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err);
+    }
+  },
+  getSample: async (req, res) => {
+    try {
+      let limit = 20;
+
+      // Limit By Query ////////////////
+      if (Object.keys(req.query).length !== 0) {
+        limit = req.query.limit;
+      }
+
+      Songs.findRandom(
+        {},
+        {},
+        { limit, populate: "artist album" },
+        (err, results) => {
+          res.json({
+            message: "Success get Songs Sample",
+            songs: results,
+          });
+        }
+      );
     } catch (err) {
       console.log(err);
       res.status(500).send(err);
