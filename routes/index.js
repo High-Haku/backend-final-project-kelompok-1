@@ -56,6 +56,10 @@ router.get("/images/:key", (req, res) => {
       return res.sendStatus(404);
     });
 
+    res.set({
+      "Cache-Control": "max-age=1209600",
+    });
+
     readStream.pipe(res);
   } catch (error) {
     console.log(error);
