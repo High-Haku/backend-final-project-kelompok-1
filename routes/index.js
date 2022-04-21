@@ -25,15 +25,13 @@ const transactionsRoute = require("./transaction.route");
 const spotifyRoute = require("./spotify.route");
 
 // w3 route get file
-router.get("/s3/:key", (req, res) => {
+router.get("/music/:key", (req, res) => {
   try {
     const key = req.params.key;
     const readStream = getFileStream(key).on("error", (error) => {
       console.log(error);
       return res.sendStatus(404);
     });
-
-    console.log(readStream);
 
     res.set({
       "Content-Range": "bytes 0 - 6345229",
@@ -43,7 +41,24 @@ router.get("/s3/:key", (req, res) => {
       "Content-Type": "audio/mpeg",
     });
 
-    console.log(res);
+    readStream.pipe(res);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+router.get("/images/:key", (req, res) => {
+  try {
+    const key = req.params.key;
+    const readStream = getFileStream(key).on("error", (error) => {
+      console.log(error);
+      return res.sendStatus(404);
+    });
+
+    res.set({
+      "Cache-Control": "max-age=3600",
+    });
 
     readStream.pipe(res);
   } catch (error) {
