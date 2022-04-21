@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const random = require("mongoose-simple-random");
 
 const songsSchema = new mongoose.Schema({
   title: {
@@ -117,6 +118,7 @@ songsSchema.post("deleteOne", { document: true, query: false }, async (doc) => {
   }
 });
 
+songsSchema.plugin(random);
 const Songs = mongoose.model("songs", songsSchema);
 
 module.exports = Songs;

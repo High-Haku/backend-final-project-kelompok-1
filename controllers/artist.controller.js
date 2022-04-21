@@ -6,14 +6,20 @@ module.exports = {
     try {
       let limit = 20;
       let offset = 0;
+      let query = {};
 
       // Search By Query ////////////////
       if (Object.keys(req.query).length !== 0) {
         limit = req.query.limit;
         offset = req.query.offset;
+
+        if (req.query.search) {
+          const regex = new RegExp(`.*${req.query.search}.*`, "gi");
+          query = { name: { $regex: regex } };
+        }
       }
 
-      const data = await Artists.find({}, "-__v")
+      const data = await Artists.find(query, "-__v")
         .skip(offset)
         .limit(limit)
         .populate("songs", "title")
@@ -21,6 +27,26 @@ module.exports = {
       res.json({
         message: "Succes get All Artist",
         data: data,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err);
+    }
+  },
+  getSample: async (req, res) => {
+    try {
+      let limit = 20;
+
+      // Limit By Query ////////////////
+      if (Object.keys(req.query).length !== 0) {
+        limit = req.query.limit;
+      }
+
+      Artists.findRandom({}, {}, { limit }, (err, results) => {
+        res.json({
+          message: "Success get Artists Sample",
+          artists: results,
+        });
       });
     } catch (err) {
       console.log(err);
