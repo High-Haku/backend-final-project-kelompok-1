@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const random = require("mongoose-simple-random");
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -57,5 +58,6 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
+UserSchema.plugin(random);
 const UserModel = mongoose.model("users", UserSchema);
 module.exports = UserModel;

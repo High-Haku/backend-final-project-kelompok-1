@@ -8,10 +8,13 @@ const {
   getUserByID,
   addUser,
   updateUser,
+  getSample,
   deleteUser,
+  addToMyFavorite,
 } = require("../controllers/users.controller");
 
 router.get("/", getUsers);
+router.get("/sample", getSample);
 router.get("/:id", getUserByID);
 router.post(
   "/",
@@ -31,6 +34,7 @@ router.patch(
   }).single("image"),
   updateUser
 );
+router.patch("/:id/add", addToMyFavorite);
 router.delete("/:id", deleteUser);
 
 module.exports = router;
