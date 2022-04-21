@@ -57,7 +57,7 @@ router.get("/images/:key", (req, res) => {
     });
 
     res.set({
-      "Cache-Control": "max-age=1209600",
+      "Cache-Control": "max-age=3600",
     });
 
     readStream.pipe(res);
