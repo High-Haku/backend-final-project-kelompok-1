@@ -12,7 +12,8 @@ module.exports = {
 
       const data = await Posting.find({}, "-__v")
         .sort({ postDate: -1 })
-        .limit(limit);
+        .limit(limit)
+        .populate("postedBy", " image name");
       res.json({
         message: "Succes get All Posting",
         data: data,
@@ -25,7 +26,10 @@ module.exports = {
 
   getById: async (req, res) => {
     try {
-      const data = await Posting.findById(req.params.id, "-__v");
+      const data = await Posting.findById(req.params.id, "-__v").populate(
+        "postedBy",
+        " image name"
+      );
       res.json({
         message: "Succes get All posting by ID",
         data: data,

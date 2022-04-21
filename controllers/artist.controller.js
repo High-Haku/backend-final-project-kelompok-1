@@ -22,7 +22,7 @@ module.exports = {
       const data = await Artists.find(query, "-__v")
         .skip(offset)
         .limit(limit)
-        .populate("songs", "title")
+        .populate("songs", "title file")
         .populate("albums", "name");
       res.json({
         message: "Succes get All Artist",
@@ -56,7 +56,7 @@ module.exports = {
   getById: async (req, res) => {
     try {
       const data = await Artists.findById(req.params.id, "-__v")
-        .populate("songs", "title")
+        .populate("songs", "title file")
         .populate("albums", "name");
       res.json({
         message: "Succes get All Artist By ID",
